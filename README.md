@@ -1,30 +1,36 @@
-# CosmWasm NFTS
+# Information
+> **Address Owner**: 
+> aura1dzmkendynq73t0jvcj24s8t0dnexuj07x6juws
 
-This repo is the official repository to work on all NFT standard and examples
-in the CosmWasm ecosystem. `cw721` and `cw721-base` were moved from
-[`cw-plus`](https://github.com/CosmWasm/cw-plus) to start this repo, but it shall evolve
-as driven by the community's needs.
+> **Address smart contract**: aura16vm6ex9yp8jvp0f6vua2kfmsw04wh24lvt3l6xq62gj97u9c9hnswywk32
 
-Please feel free to modify cw721 as you need to support these projects and add many extensions
-and additional standards (like [cw-2981](https://github.com/CosmWasm/cw-plus/pull/414)) to meet
-the demands of the various NFT projects springing forth.
+> **Mnemonic**: eagle melody aim spatial raise crane kit catch hobby crane vapor thumb cat mandate day dentist cruise rubber object annual best tiger swear angry
 
-## Maintainers
+# Env
+- **Go**
+- **Rust**
+- **jq**
+- **Aura Daemon**
+# Command to deploy
+## Install Wasm32
+```
+rustup target add wasm32-unknown-unknown
+```
+## Build smart contract
+```
+cd ./contract/cw721-base
+rustup default stable
+RUSTFLAGS='-C link-arg=-s' cargo wasm
+```
 
-This repo is not maintained directly by Confio (although we can provide some code reviews and support),
-but rather by 4 highly active community members working on NFT projects of their own:
+## Deploy smart contract
+```
+aurad tx wasm store  ../../target/wasm32-unknown-unknown/release/cw721_base.wasm --from wallet --node https://rpc.serenity.aura.network:443 --chain-id serenity-testnet-001 --gas-prices 0.025uaura --gas auto --gas-adjustment 1.3
+```
 
-* [alwin-peng](https://github.com/alwin-peng)
-* [ben2x4](https://github.com/ben2x4)
-* [JakeHartnell](https://github.com/JakeHartnell)
-* [orkunkl](https://github.com/orkunkl)
-* [the-frey](https://github.com/the-frey)
+- Get CODE_ID of smart contract in https://serenity.aurascan.io/ with hash code in above command
 
-## Contributing
-
-If you are working on an NFT project as well and wish to give input, please raise issues and/or PRs.
-Additional maintainers can be added if they show commitment to the project.
-
-You can also join the `#nfts` channel on [CosmWasm Discord](https://docs.cosmwasm.com/chat)
-for more interactive discussion on these themes.
-
+## Init smart contract
+```
+aurad tx wasm instantiate ${CODE_ID} '{"minter":"${ADDRESS_OWNER}","name":"Aura NFT","symbol":"ANFT"}' --from wallet --label "cw721" --node https://rpc.serenity.aura.network:443 --chain-id serenity-testnet-001 --gas-prices 0.025uaura --gas auto --gas-adjustment 1.3 -y --no-admin
+```
